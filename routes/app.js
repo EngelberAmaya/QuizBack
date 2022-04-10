@@ -1,7 +1,10 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 
 var app = express();
+
+var SEED = require('../config/config').SEED;
 
 var Usuario = require('../models/usuario')
 
@@ -104,10 +107,25 @@ app.post('/login', (req, res) => {
             });
         }
 
+        if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
+			return res.status(400).json({
+				ok:false,
+				mensaje: 'Credenciales incorrectas - password',
+				errors: err
+			});
+		}
+
+        // Crear un token
+        var token = jwt.sign({usuario: usuarioDB}, SEED, { expiresIn: 3600 })
+
         res.status(200).json({
             ok: true,
-            mensaje: 'Login post correcto',
-            body: body
+            // usuario: usuarioDB,
+            // token: token,
+            // id: usuarioDB._id,
+            token: token,
+            role: usuarioDB.role,
+            blocked: usuarioDB.blocked
         });
 
     })

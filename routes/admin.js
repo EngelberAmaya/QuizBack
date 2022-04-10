@@ -1,14 +1,15 @@
-const express = require('express');
+var express = require('express');
 
-const app = express();
+var app = express();
 
 var Usuario = require('../models/usuario')
+var mdMiddlewares = require('../middlewares/autenticacion');
 
 // ============================================
 // Listado de usuarios invitados
 // ============================================
 
-app.get('/invitado',  (req, res, next) => {
+app.get('/invitado', mdMiddlewares.verificaToken , (req, res, next) => {
 
     Usuario.find({ role: "invitado" }, 'contact email score role blocked')
         .exec(
@@ -38,7 +39,7 @@ app.get('/invitado',  (req, res, next) => {
 // Listado de usuarios supervisor
 // ============================================
 
-app.get('/supervisor',  (req, res, next) => {
+app.get('/supervisor', mdMiddlewares.verificaToken, (req, res, next) => {
 
     Usuario.find({ role: "supervisor" }, 'contact email score role blocked')
         .exec(
