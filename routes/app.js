@@ -42,7 +42,7 @@ app.post('/invitado',  (req, res) => {
 
     })    
   
-});
+});  
 
 // ============================================
 // Crear un nuevo usuario con rol supervisor
